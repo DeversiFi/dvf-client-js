@@ -22,10 +22,7 @@ module.exports = async (web3, userConfig = {}, sw) => {
   dvf.config = Object.assign({}, defaultConfig, userConfig)
 
   // ethfinex exchange config
-  const exchangeConf = dvf.config.autoLoadExchangeConf ?
-    await dvf.getConfig()
-    :
-    {}
+  const exchangeConf = dvf.config.autoLoadExchangeConf ? await dvf.getConfig() : {}
 
   // user config has priority
   dvf.config = Object.assign({}, defaultConfig, exchangeConf, userConfig)
@@ -58,8 +55,7 @@ module.exports = async (web3, userConfig = {}, sw) => {
 
   try {
     chainId = chainId || (await web3.eth.net.getId())
-  }
-  catch(e)  {
+  } catch (e) {
     console.log('error getting chainId')
   }
 
@@ -71,8 +67,7 @@ module.exports = async (web3, userConfig = {}, sw) => {
     if (!dvf.get('account')) {
       console.warn('Please specify a valid account or account index')
     }
-  }
-  else if (dvf.config.address){
+  } else if (dvf.config.address) {
     dvf.set('account', dvf.config.address.toLowerCase())
   }
 

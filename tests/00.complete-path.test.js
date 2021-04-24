@@ -5,7 +5,7 @@ describe.skip('00 - Complete Path', () => {
 
   let dvf, address, privateKey, setupData, starkSignature, nonce
 
-  beforeAll(async () => {
+  before(async () => {
     setupData = await setup()
     address = setupData.account.address
     privateKey = setupData.account.privateKey
