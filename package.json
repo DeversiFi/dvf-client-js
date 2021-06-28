@@ -46,7 +46,7 @@
     "aware": "^0.3.1",
     "bignumber.js": "^9.0.0",
     "dvf-utils": "git+https://github.com/DeversiFi/dvf-utils#6ac11d713fbe540297819516d42afe6d66d244c6",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "starkware_crypto": "git+https://github.com/DeversiFi/starkware-crypto#bf94bde1f6bbb4156ded52171cd70d3e02cd5919",
