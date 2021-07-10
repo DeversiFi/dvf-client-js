@@ -3,11 +3,18 @@ const { preparePriceBN, prepareAmountBN, splitSymbol } = require('dvf-utils')
 const DVFError = require('../dvf/DVFError')
 const computeBuySellData = require('../dvf/computeBuySellData')
 
-module.exports = async (dvf, { symbol, amount, price, validFor, feeRate, nonce, signature }) => {
+module.exports = async (
+  dvf,
+  { symbol, amount, price, validFor, feeRate, nonce, signature, settleSpread = {} }
+) => {
   price = preparePriceBN(price)
   amount = prepareAmountBN(amount)
 
-  feeRate = parseFloat(feeRate) || dvf.config.DVF.defaultFeeRate
+  feeRate = parseFloat(feeRate)
+
+  if (Number.isNaN(feeRate)) {
+    feeRate = dvf.config.DVF.defaultFeeRate
+  }
 
   const symbolArray = splitSymbol(symbol)
   const baseSymbol = symbolArray[0]
@@ -30,8 +37,12 @@ module.exports = async (dvf, { symbol, amount, price, validFor, feeRate, nonce, 
     }
   }
 
-  const settleSpreadBuy = buyCurrency.settleSpread
-  const settleSpreadSell = sellCurrency.settleSpread
+  const settleSpreadBuy = settleSpread.buy != null
+    ? settleSpread.buy
+    : buyCurrency.settleSpread
+  const settleSpreadSell = settleSpread.buy != null
+    ? settleSpread.sell
+    : sellCurrency.settleSpread
 
   const {
     amountSell,

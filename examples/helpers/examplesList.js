@@ -26,7 +26,9 @@ module.exports = Object.freeze([
   'cancelWithdrawal',
   'authWithTradingKey',
   'fastWithdrawalFee',
-  'fastWithdrawalMaxAmount'
+  'fastWithdrawalMaxAmount',
+  'ammDeposit',
+  'ammWithdrawal'
   // TODO
   // 'submitBuyOrder',
   // 'submitSellOrder',

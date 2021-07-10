@@ -31,6 +31,7 @@ module.exports = () => {
     createOrderMessage: compose(require('../stark/createOrderMessage')),
     sign: compose(require('../stark/starkSign')),
     signAuth: compose(require('../stark/starkSignAuth')),
+    signAmmFundingOrder: require('../stark/signAmmFundingOrder')(dvf),
     createTransferMsg: compose(require('../stark/createTransferMessage')),
     createPrivateKey: require('../stark/createPrivateKey'),
     createKeyPair: compose(require('../stark/createKeyPair')),
@@ -165,6 +166,7 @@ module.exports = () => {
   dvf.fastWithdrawal = compose(require('../../api/fastWithdrawal'))
   dvf.fastWithdrawalFee = compose(require('../../api/fastWithdrawalFee'))
   dvf.fastWithdrawalMaxAmount = compose(require('../../api/fastWithdrawalMaxAmount'))
+  dvf.getAmmFundingOrderData = compose(require('../../api/getAmmFundingOrderData'))
   dvf.getDeposits = compose(require('../../api/getDeposits'))
   dvf.getBalance = compose(require('../../api/getBalance'))
   dvf.getBalanceUsd = compose(require('../../api/getBalanceUsd'))
@@ -180,6 +182,7 @@ module.exports = () => {
   dvf.getVaultId = compose(require('../../api/getVaultId'))
   dvf.getVaultIdFromServer = compose(require('../../api/getVaultIdFromServer'))
   dvf.getVaultIdAndStarkKey = compose(require('../../api/getVaultIdAndStarkKey'))
+  dvf.postAmmFundingOrder = compose(require('../../api/postAmmFundingOrder'))
   dvf.register = compose(require('../../api/register'))
   dvf.registerAndDeposit = compose(require('../../api/registerAndDeposit'))
   dvf.submitBuyOrder = compose(require('../../api/submitBuyOrder'))

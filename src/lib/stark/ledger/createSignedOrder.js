@@ -1,13 +1,20 @@
 const Eth = require('@ledgerhq/hw-app-eth').default
-const byContractAddress = require('@ledgerhq/hw-app-eth/erc20')
-  .byContractAddress
+const { byContractAddress } = require('@ledgerhq/hw-app-eth/erc20')
 const DVFError = require('../../dvf/DVFError')
 const BN = require('bignumber.js')
 const _ = require('lodash')
 const selectTransport = require('../../ledger/selectTransport')
 const getTokenAddressFromTokenInfoOrThrow = require('../../dvf/token/getTokenAddressFromTokenInfoOrThrow')
 
-module.exports = async (dvf, path, starkOrder) => {
+const getPublicKey = async (eth, starkPath) => {
+  const tempKey = (await eth.starkGetPublicKey(starkPath)).toString('hex')
+  return {
+    x: tempKey.substr(2, 64),
+    y: tempKey.substr(66)
+  }
+}
+
+module.exports = async (dvf, path, starkOrder, { returnStarkPublicKey = true } = {}) => {
   const Transport = selectTransport(dvf.isBrowser)
 
   const buySymbol = _.findKey(dvf.config.tokenRegistry, {
@@ -25,11 +32,10 @@ module.exports = async (dvf, path, starkOrder) => {
   const eth = new Eth(transport)
   const {address} = await eth.getAddress(path)
   const starkPath = dvf.stark.ledger.getPath(address)
-  const tempKey = (await eth.starkGetPublicKey(starkPath)).toString('hex')
-  let starkPublicKey = {
-    x: tempKey.substr(2, 64),
-    y: tempKey.substr(66)
-  }
+
+  const starkPublicKey = returnStarkPublicKey
+    ? null
+    : await getPublicKey(eth, starkPath)
 
   // TODO Extract below code to a utility method
   // to be used for both buy as sell tokens and
@@ -98,24 +104,24 @@ module.exports = async (dvf, path, starkOrder) => {
   }
 
   const starkSignature = await eth.starkSignOrder_v2(
-      starkPath,
-      sellTokenAddress,
-      sellSymbol === 'ETH' ? 'eth' : 'erc20',
-      new BN(sellTokenInfo.quantization),
-      null,
-      buyTokenAddress,
-      buySymbol === 'ETH' ? 'eth' : 'erc20',
-      new BN(buyTokenInfo.quantization),
-      null,
-      starkOrder.vaultIdSell,
-      starkOrder.vaultIdBuy,
-      new BN(starkOrder.amountSell),
-      new BN(starkOrder.amountBuy),
-      starkOrder.nonce,
-      starkOrder.expirationTimestamp
-    )
+    starkPath,
+    sellTokenAddress,
+    sellSymbol === 'ETH' ? 'eth' : 'erc20',
+    new BN(sellTokenInfo.quantization),
+    null,
+    buyTokenAddress,
+    buySymbol === 'ETH' ? 'eth' : 'erc20',
+    new BN(buyTokenInfo.quantization),
+    null,
+    starkOrder.vaultIdSell,
+    starkOrder.vaultIdBuy,
+    new BN(starkOrder.amountSell),
+    new BN(starkOrder.amountBuy),
+    starkOrder.nonce,
+    starkOrder.expirationTimestamp
+  )
 
   await transport.close()
 
-  return {starkPublicKey, starkSignature}
+  return { starkPublicKey, starkSignature }
 }

@@ -2,7 +2,8 @@ const swJS = require('starkware_crypto')
 const FP = require('lodash/fp')
 
 const {
-  starkTransferTxToMessageHash
+  starkTransferTxToMessageHash,
+  starkLimitOrderToMessageHash
 } = require('dvf-utils')
 
 const DVFError = require('../dvf/DVFError')
@@ -15,10 +16,13 @@ const transferTransactionTypes = [
 ]
 
 const getMessage = sw => tx => {
-  if (transferTransactionTypes.includes(tx.type)) {
+  if (tx.type != null) {
+    if (!(transferTransactionTypes.includes(tx.type))) {
+      throw new DVFError(`Unsupported stark transaction type: ${tx.type}`, {tx})
+    }
     return starkTransferTxToMessageHash(sw)(tx)
   } else {
-    throw new DVFError(`Unsupported stark transaction type: ${tx.type}`, { tx })
+    return starkLimitOrderToMessageHash(sw)(tx)
   }
 }
 
