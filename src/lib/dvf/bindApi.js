@@ -149,6 +149,9 @@ module.exports = () => {
   dvf.getTokenLiquidityLeft = compose(require('../../api/getTokenLiquidityLeft'))
   dvf.getTokenSaleStartEnd = compose(require('../../api/getTokenSaleStartEnd'))
 
+  // dvf airdrop eligibility
+  dvf.airdropEligibility = compose(require('../../api/airdropEligibility'))
+
   dvf.getBridgeContractAddressOrThrow = compose(
     require('../../lib/dvf/getBridgeContractAddressOrThrow')
   )
